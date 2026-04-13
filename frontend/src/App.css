@@ -1,38 +1,157 @@
-.App {
+.signupContainer {
+  width: 100%;
+  height: 80vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.signupSection
+{
+  width: 50%;
+  height: 400px;
+  background-color: white;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0px 0px 4px 4px #f1f1f1;
+  display: flex;
+  gap: 30px;
+}
+
+.signupImg {
+  background-image: url("../public/signupimg.svg");
+  width: 50%;
+  height: 100%;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  border-radius: 50px;
+  overflow: hidden;
+}
+
+.signupForm {
+  width: 50%;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.alreadyUser {
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.loginWrapper {
+  width: 100%;
+  height: 80vh;
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  align-items: center;
+  background-image: url(../public/loginbackground.jpg);
+  background-repeat: no-repeat;
+  background-size:cover;
+  background-position: center center;
 }
 
-.App-link {
-  color: #61dafb;
+.navbarWrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 40px;
+  height: 70px;
+  background-color: #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.navMenu {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.navLinks {
+  text-decoration: none;
+  color: #2C1A0E;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.navLinks:hover {
+  color: #C8722A;
+}
+
+.navLinks.active {
+  color: #C8722A;
+  border-bottom: 2px solid #C8722A;
+  padding-bottom: 2px;
+}
+
+.navbarWrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 40px;
+  height: 70px;
+  background-color: #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.navSearch {
+  display: flex;
+  align-items: center;
+  flex: 1;                  /* takes up center space */
+  max-width: 400px;
+  margin: 0 40px;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 8px 16px;
+  border: 1px solid #D4C4B0;
+  border-radius: 20px 0 0 20px;
+  font-size: 14px;
+  outline: none;
+  color: #2C1A0E;
+}
+
+.searchInput:focus {
+  border-color: #C8722A;
+}
+
+.searchBtn {
+  padding: 8px 18px;
+  background-color: #C8722A;
+  color: #fff;
+  border: none;
+  border-radius: 0 20px 20px 0;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.searchBtn:hover {
+  background-color: #A85A1E;
+}
+
+.navMenu {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.navLinks {
+  text-decoration: none;
+  color: #2C1A0E;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.navLinks:hover {
+  color: #C8722A;
+}
+
+.navLinks.active {
+  color: #C8722A;
+  border-bottom: 2px solid #C8722A;
+  padding-bottom: 2px;
 }

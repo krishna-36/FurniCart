@@ -1,0 +1,246 @@
+.contactWrapper {
+  width: 100%;
+  font-family: sans-serif;
+}
+
+.brand {
+  color: #C8722A;
+}
+
+/* Hero */
+.contactHero {
+  background: #2C1A0E;
+  padding: 70px 60px;
+  text-align: center;
+}
+
+.contactBadge {
+  background: #3D2510;
+  border: 0.5px solid #5C3820;
+  border-radius: 20px;
+  padding: 6px 18px;
+  display: inline-block;
+  color: #C8722A;
+  font-size: 12px;
+  letter-spacing: 2px;
+  margin-bottom: 20px;
+}
+
+.contactHero h1 {
+  font-size: 42px;
+  font-weight: 500;
+  color: #F0E6D8;
+  margin-bottom: 14px;
+}
+
+.contactHero p {
+  font-size: 15px;
+  color: #A07858;
+  max-width: 480px;
+  margin: 0 auto;
+  line-height: 1.8;
+}
+
+/* Main */
+.contactMain {
+  padding: 64px 60px;
+  background: #FDF8F3;
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 48px;
+  align-items: start;
+}
+
+.infoCol h2 {
+  font-size: 26px;
+  font-weight: 500;
+  color: #2C1A0E;
+  margin-bottom: 8px;
+}
+
+.infoCol p {
+  font-size: 14px;
+  color: #8A6A50;
+  line-height: 1.8;
+  margin-bottom: 32px;
+}
+
+.infoCard {
+  background: #fff;
+  border: 0.5px solid #E0D0C0;
+  border-radius: 12px;
+  padding: 20px 22px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.infoIconBox {
+  width: 46px;
+  height: 46px;
+  background: #F5EDE0;
+  border-radius: 10px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.infoTitle {
+  font-size: 13px;
+  font-weight: 500;
+  color: #2C1A0E;
+  margin-bottom: 3px;
+}
+
+.infoSub {
+  font-size: 12px;
+  color: #8A6A50;
+}
+
+.socialRow {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.socialBtn {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: #F5EDE0;
+  border: 0.5px solid #E0D0C0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.socialBtn:hover {
+  background: #EDD9C0;
+}
+
+/* Form */
+.formCol {
+  background: #fff;
+  border: 0.5px solid #E0D0C0;
+  border-radius: 16px;
+  padding: 36px;
+}
+
+.formCol h2 {
+  font-size: 22px;
+  font-weight: 500;
+  color: #2C1A0E;
+  margin-bottom: 6px;
+}
+
+.formCol p {
+  font-size: 13px;
+  color: #8A6A50;
+  margin-bottom: 28px;
+}
+
+.formRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.formGroup {
+  margin-bottom: 16px;
+}
+
+label {
+  display: block;
+  font-size: 11px;
+  font-weight: 500;
+  color: #8A6A50;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+
+input,
+textarea,
+select {
+  width: 100%;
+  padding: 10px 14px;
+  border: 0.5px solid #D4C4B0;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: sans-serif;
+  color: #2C1A0E;
+  outline: none;
+  background: #FDFAF7;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: #C8722A;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 110px;
+}
+
+.submitBtn {
+  width: 100%;
+  padding: 13px;
+  background: #C8722A;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 8px;
+  letter-spacing: 0.3px;
+}
+
+.submitBtn:hover {
+  background: #A85A1E;
+}
+
+/* FAQ */
+.faqSection {
+  padding: 64px 60px;
+  background: #fff;
+}
+
+.faqSection h2 {
+  font-size: 28px;
+  font-weight: 500;
+  color: #2C1A0E;
+  margin-bottom: 32px;
+  text-align: center;
+}
+
+.faqGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.faqCard {
+  background: #FDFAF7;
+  border: 0.5px solid #E0D0C0;
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.faqCard h4 {
+  font-size: 14px;
+  font-weight: 500;
+  color: #2C1A0E;
+  margin-bottom: 8px;
+}
+
+.faqCard p {
+  font-size: 13px;
+  color: #8A6A50;
+  line-height: 1.7;
+}

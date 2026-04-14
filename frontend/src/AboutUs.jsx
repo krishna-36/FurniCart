@@ -236,8 +236,8 @@ function AboutUs() {
               color: "#C8722A",
             },
             {
-              initials: "LP",
-              name: "Lohith P.K",
+              initials: "L",
+              name: "Lohith",
               bg: "#E8F5F0",
               color: "#0F6E56",
             },

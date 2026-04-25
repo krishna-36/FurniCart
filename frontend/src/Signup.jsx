@@ -30,7 +30,7 @@ function Signup() {
     }
 
     try {
-      const response = await axios.post("http://localhost:5000/api/signup", signupData);
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/signup`, signupData);
       setStatus(response.data.message);
       setTimeout(() => navigate("/login"), 700);
     } catch (error) {

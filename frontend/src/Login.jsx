@@ -31,7 +31,7 @@ function Login({ onLogin }) {
     }
 
     try {
-      const response = await axios.post("http://localhost:5000/api/login", loginData);
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/login`, loginData);
       onLogin(response.data.user);
       setStatus(response.data.message);
       setTimeout(() => navigate("/account"), 700);

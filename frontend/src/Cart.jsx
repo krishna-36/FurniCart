@@ -21,11 +21,13 @@ function Cart({
   const subtotal = useMemo(() => {
     return cartItems.reduce(
       (total, item) => total + Number(item.price) * item.quantity,
-      0
+      0,
     );
   }, [cartItems]);
   const deliveryFee = subtotal > 15000 || subtotal === 0 ? 0 : 499;
   const total = subtotal + deliveryFee;
+
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (!currentUser) {
@@ -52,6 +54,8 @@ function Cart({
   }
 
   async function placeOrder(event) {
+    if (loading) return; // 👈 prevents double click
+    setLoading(true);
     event.preventDefault();
 
     if (!cartItems.length) {
@@ -59,27 +63,128 @@ function Cart({
       return;
     }
 
-    if (!customer.name || !customer.email || !customer.phone || !customer.address) {
+    if (
+      !customer.name ||
+      !customer.email ||
+      !customer.phone ||
+      !customer.address
+    ) {
       setStatus("Please fill all checkout details.");
       return;
     }
 
     try {
-      const response = await axios.post("http://localhost:5000/api/orders", {
-        customer,
-        items: cartItems,
-      });
-      setOrderConfirmation({
-        orderId: response.data.orderId,
-        total: response.data.total,
-        name: customer.name,
-        email: customer.email,
-      });
-      setStatus("");
-      clearCart();
-      setCustomer({ name: "", email: "", phone: "", address: "" });
+      // 1️⃣ Create order in backend (status = Pending)
+      const orderRes = await axios.post(
+        `${process.env.REACT_APP_API_URL}/api/orders`,
+        {
+          customer,
+          items: cartItems,
+        },
+      );
+
+      const orderId = orderRes.data.orderId;
+      const totalAmount = orderRes.data.total;
+
+      // 2️⃣ Create Razorpay order
+      const paymentRes = await axios.post(
+        `${process.env.REACT_APP_API_URL}/api/payment/create-order`,
+        { amount: totalAmount },
+      );
+
+      console.log("FULL PAYMENT RESPONSE:", paymentRes);
+
+      const data = paymentRes.data;
+
+      console.log("RAZORPAY DATA:", data);
+      console.log("ORDER ID:", data?.id);
+
+      // 🚨 IMPORTANT CHECK (prevents login popup issue)
+      if (!data || !data.id) {
+        setStatus("Payment initialization failed.");
+        return;
+      }
+
+      // 3️⃣ Open Razorpay checkout
+      const options = {
+        key: "rzp_test_Shg3RscsD4XJCN", // 🔥 replace with your real test key
+        amount: data.amount,
+        currency: "INR",
+        order_id: data.id,
+
+        method: {
+          upi: true,
+          card: true,
+          netbanking: true,
+        },
+
+        config: {
+          display: {
+            blocks: {
+              upi: {
+                name: "Pay using UPI",
+                instruments: [
+                  {
+                    method: "upi",
+                  },
+                ],
+              },
+            },
+            sequence: ["block.upi"],
+            preferences: {
+              show_default_blocks: true,
+            },
+          },
+        },
+
+        handler: async function (paymentResponse) {
+          try {
+            // 4️⃣ Verify payment
+            const verifyRes = await axios.post(
+              `${process.env.REACT_APP_API_URL}/api/payment/verify-payment`,
+              {
+                ...paymentResponse,
+                orderId,
+              },
+            );
+
+            // 🚨 CHECK verification result
+            if (!verifyRes.data.success) {
+              setStatus("Payment verification failed.");
+              return;
+            }
+
+            // ✅ ONLY AFTER SUCCESS
+            setOrderConfirmation({
+              orderId,
+              total: totalAmount,
+              name: customer.name,
+              email: customer.email,
+            });
+
+            setLoading(false);
+
+            clearCart();
+            setCustomer({ name: "", email: "", phone: "", address: "" });
+            setStatus("");
+          } catch (err) {
+            console.error("Verification failed:", err);
+            setStatus("Payment verification failed.");
+          }
+        },
+
+        modal: {
+          ondismiss: function () {
+            setStatus("Payment cancelled.");
+          },
+        },
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.open();
     } catch (error) {
-      setStatus(error.response?.data?.message || "Unable to place order right now.");
+      console.error("Payment error:", error);
+      setStatus(error.response?.data?.message || "Payment failed.");
     }
   }
 
@@ -153,7 +258,9 @@ function Cart({
                 <div className="quantityControl">
                   <button
                     type="button"
-                    onClick={() => updateCartQuantity(item._id, item.quantity - 1)}
+                    onClick={() =>
+                      updateCartQuantity(item._id, item.quantity - 1)
+                    }
                   >
                     -
                   </button>
@@ -167,7 +274,9 @@ function Cart({
                   />
                   <button
                     type="button"
-                    onClick={() => updateCartQuantity(item._id, item.quantity + 1)}
+                    onClick={() =>
+                      updateCartQuantity(item._id, item.quantity + 1)
+                    }
                   >
                     +
                   </button>
@@ -192,7 +301,9 @@ function Cart({
               </div>
               <div>
                 <span>Delivery</span>
-                <strong>{deliveryFee ? formatPrice(deliveryFee) : "Free"}</strong>
+                <strong>
+                  {deliveryFee ? formatPrice(deliveryFee) : "Free"}
+                </strong>
               </div>
               <div className="summaryTotal">
                 <span>Total</span>
@@ -232,8 +343,8 @@ function Cart({
 
             {status && <p className="formStatus">{status}</p>}
 
-            <button className="cartBtn" type="submit">
-              Place order
+            <button type="submit" disabled={loading} className="cartBtn">
+              {loading ? "Processing..." : "Buy"}
             </button>
           </form>
         </section>

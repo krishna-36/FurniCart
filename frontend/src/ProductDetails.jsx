@@ -11,7 +11,7 @@ function ProductDetails({ addToCart }) {
     async function loadProduct() {
       try {
         const response = await axios.get(
-          `http://localhost:5000/api/products/${productId}`
+          `${process.env.REACT_APP_API_URL}/api/products/${productId}`
         );
         setProduct(response.data);
         setStatus("ready");

@@ -1,13 +1,23 @@
 import mongoose from "mongoose";
 import express from "express";
 import cors from "cors";
+import dotenv from "dotenv";
+dotenv.config();
+import Razorpay from "razorpay";
+import crypto from "crypto";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 const MONGO_URL = process.env.MONGO_URL || "mongodb://localhost:27017/Furniture";
 
 app.use(express.json());
-app.use(cors({ origin: process.env.CLIENT_URL || "http://localhost:3000" }));
+app.use(cors({
+  origin: [
+    "http://localhost:3000",
+    "http://192.168.0.122:3000"
+  ],
+  credentials: true
+}));
 app.use(express.urlencoded({ extended: true }));
 
 mongoose
@@ -18,6 +28,11 @@ mongoose
   .catch((err) => {
     console.log("MongoDB connection failed:", err.message);
   });
+
+const razorpay = new Razorpay({
+  key_id: process.env.KEY_ID,
+  key_secret: process.env.KEY_SECRET,
+});
 
 const productSchema = new mongoose.Schema({
   _id: String,
@@ -249,14 +264,142 @@ app.post("/api/orders", async (req, res) => {
       email: customer.email.toLowerCase().trim(),
     };
 
-    const order = await Order.create({ customer: orderCustomer, items: cleanedItems, total });
+    const order = await Order.create({ customer: orderCustomer, items: cleanedItems, total, status: "pending" });
     res.status(201).send({
-      message: "Order placed successfully",
+      message: "Order Created, Proceed to payment",
       orderId: order._id,
       total: order.total,
+      status: "Pending" 
     });
   } catch (error) {
     res.status(500).send({ message: "Unable to place order", error: error.message });
+  }
+});
+
+app.post("/api/payment/create-order", async (req, res) => {
+  try {
+    const { amount } = req.body;
+
+    if (!amount) {
+      return res.status(400).send({ message: "Amount is required" });
+    }
+
+    const order = await razorpay.orders.create({
+      amount: Math.round(amount * 100), // IMPORTANT
+      currency: "INR",
+      receipt: "rcpt_" + Date.now(),
+    });
+
+    console.log("RAZORPAY ORDER:", order); // 👈 DEBUG
+
+    res.send(order);
+
+  } catch (error) {
+    console.error("RAZORPAY ERROR:", error);
+    res.status(500).send({
+      message: "Failed to create Razorpay order",
+      error: error.message,
+    });
+  }
+});app.post("/api/payment/create-order", async (req, res) => {
+  try {
+    const { amount } = req.body;
+
+    if (!amount) {
+      return res.status(400).send({ message: "Amount is required" });
+    }
+
+    const order = await razorpay.orders.create({
+      amount: Math.round(amount * 100), // IMPORTANT
+      currency: "INR",
+      receipt: "rcpt_" + Date.now(),
+    });
+
+    console.log("RAZORPAY ORDER:", order); // 👈 DEBUG
+
+    res.send(order);
+
+  } catch (error) {
+    console.error("RAZORPAY ERROR:", error);
+    res.status(500).send({
+      message: "Failed to create Razorpay order",
+      error: error.message,
+    });
+  }
+});
+app.post("/api/payment/verify-payment", async (req, res) => {
+  try {
+    const {
+      razorpay_order_id,
+      razorpay_payment_id,
+      razorpay_signature,
+      orderId,
+    } = req.body;
+
+    // 🔍 Validate required fields
+    if (
+      !razorpay_order_id ||
+      !razorpay_payment_id ||
+      !razorpay_signature ||
+      !orderId
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "Missing payment verification data",
+      });
+    }
+
+    // 🔐 Generate expected signature
+    const generatedSignature = crypto
+      .createHmac("sha256", process.env.KEY_SECRET)
+      .update(`${razorpay_order_id}|${razorpay_payment_id}`)
+      .digest("hex");
+
+    // ❌ Signature mismatch
+    if (generatedSignature !== razorpay_signature) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid payment signature",
+      });
+    }
+
+    // 🔍 Find order first
+    const order = await Order.findById(orderId);
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+
+    // ⚠️ Prevent duplicate updates
+    if (order.status === "Paid") {
+      return res.json({
+        success: true,
+        message: "Order already marked as paid",
+      });
+    }
+
+    // ✅ Update order
+    order.status = "Paid";
+    order.paymentId = razorpay_payment_id;
+    order.razorpayOrderId = razorpay_order_id;
+
+    await order.save();
+
+    return res.json({
+      success: true,
+      message: "Payment verified successfully",
+    });
+
+  } catch (error) {
+    console.error("Verification Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Payment verification failed",
+    });
   }
 });
 
@@ -344,6 +487,6 @@ app.post("/api/contact", async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server started at port ${PORT}`);
 });

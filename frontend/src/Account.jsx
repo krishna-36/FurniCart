@@ -14,7 +14,7 @@ function Account({ currentUser, onLogout }) {
       }
 
       try {
-        const response = await axios.get("http://localhost:5000/api/orders", {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders`, {
           params: { email: currentUser.email },
         });
         setOrders(response.data);

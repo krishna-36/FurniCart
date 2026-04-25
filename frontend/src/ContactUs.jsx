@@ -26,7 +26,7 @@ function ContactUs() {
     }
 
     try {
-      const response = await axios.post("http://localhost:5000/api/contact", formData);
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/contact`, formData);
       setStatus(response.data.message);
       setFormData({
         firstName: "",

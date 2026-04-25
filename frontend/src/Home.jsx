@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useMemo, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { NavLink, useSearchParams } from "react-router-dom";
 
 function Home({ addToCart }) {
   const [products, setProducts] = useState([]);
@@ -13,7 +13,7 @@ function Home({ addToCart }) {
   useEffect(() => {
     async function loadProducts() {
       try {
-        const response = await axios.get("http://localhost:5000/api/products");
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/products`);
         setProducts(response.data);
         setStatus("ready");
       } catch (error) {
@@ -188,10 +188,12 @@ function Home({ addToCart }) {
           {displayProducts.map((product) => (
             <article className="productCard" key={product._id}>
               <div className="productImageWrap">
+              <NavLink to ={`/products/${product._id}`}>
                 <img
-                  src={Array.isArray(product.images) ? product.images[0] : product.images}
-                  alt={product.name}
-                />
+                    src={Array.isArray(product.images) ? product.images[0] : product.images}
+                    alt={product.name}
+                  />
+              </NavLink>                
                 <span className="ratingBadge">{product.rating} star</span>
                 {product.stock <= 10 && <span className="stockBadge">Limited stock</span>}
               </div>
@@ -224,9 +226,9 @@ function Home({ addToCart }) {
                 >
                   Add to cart
                 </button>
-                <Link className="detailsBtn" to={`/products/${product._id}`}>
+                {/* <Link className="detailsBtn" to={`/products/${product._id}`}>
                   View details
-                </Link>
+                </Link> */}
               </div>
             </article>
           ))}

@@ -1,7 +1,45 @@
-import React from "react";
+import axios from "axios";
+import React, { useState } from "react";
 import "./ContactUs.css";
 
 function ContactUs() {
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    subject: "Order inquiry",
+    message: "",
+  });
+  const [status, setStatus] = useState("");
+
+  function handleChange(event) {
+    const { name, value } = event.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  }
+
+  async function handleSubmit(event) {
+    event.preventDefault();
+
+    if (!formData.firstName || !formData.email || !formData.message) {
+      setStatus("Please enter your first name, email, and message.");
+      return;
+    }
+
+    try {
+      const response = await axios.post("http://localhost:5000/api/contact", formData);
+      setStatus(response.data.message);
+      setFormData({
+        firstName: "",
+        lastName: "",
+        email: "",
+        subject: "Order inquiry",
+        message: "",
+      });
+    } catch (error) {
+      setStatus(error.response?.data?.message || "Unable to send your message right now.");
+    }
+  }
+
   return (
     <div className="contactWrapper">
 
@@ -73,29 +111,55 @@ function ContactUs() {
         </div>
 
         {/* Form Column */}
-        <div className="formCol">
+        <form className="formCol" onSubmit={handleSubmit}>
           <h2>Send us a message</h2>
           <p>Fill out the form and we'll get back to you as soon as possible.</p>
 
           <div className="formRow">
             <div>
-              <label>FIRST NAME</label>
-              <input type="text" placeholder="John" />
+              <label htmlFor="firstName">FIRST NAME</label>
+              <input
+                id="firstName"
+                name="firstName"
+                type="text"
+                placeholder="John"
+                value={formData.firstName}
+                onChange={handleChange}
+              />
             </div>
             <div>
-              <label>LAST NAME</label>
-              <input type="text" placeholder="Doe" />
+              <label htmlFor="lastName">LAST NAME</label>
+              <input
+                id="lastName"
+                name="lastName"
+                type="text"
+                placeholder="Doe"
+                value={formData.lastName}
+                onChange={handleChange}
+              />
             </div>
           </div>
 
           <div className="formGroup">
-            <label>EMAIL ADDRESS</label>
-            <input type="email" placeholder="john@example.com" />
+            <label htmlFor="email">EMAIL ADDRESS</label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              placeholder="john@example.com"
+              value={formData.email}
+              onChange={handleChange}
+            />
           </div>
 
           <div className="formGroup">
-            <label>SUBJECT</label>
-            <select>
+            <label htmlFor="subject">SUBJECT</label>
+            <select
+              id="subject"
+              name="subject"
+              value={formData.subject}
+              onChange={handleChange}
+            >
               <option>Order inquiry</option>
               <option>Product question</option>
               <option>Return / refund</option>
@@ -105,12 +169,19 @@ function ContactUs() {
           </div>
 
           <div className="formGroup">
-            <label>MESSAGE</label>
-            <textarea placeholder="Tell us how we can help you..."></textarea>
+            <label htmlFor="message">MESSAGE</label>
+            <textarea
+              id="message"
+              name="message"
+              placeholder="Tell us how we can help you..."
+              value={formData.message}
+              onChange={handleChange}
+            ></textarea>
           </div>
 
-          <button className="submitBtn">Send message</button>
-        </div>
+          {status && <p className="contactStatus">{status}</p>}
+          <button className="submitBtn" type="submit">Send message</button>
+        </form>
       </div>
 
       {/* FAQ */}

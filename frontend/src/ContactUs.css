@@ -205,6 +205,10 @@ textarea {
   background: #A85A1E;
 }
 
+.contactStatus {
+  margin: 0 0 14px;
+}
+
 /* FAQ */
 .faqSection {
   padding: 64px 60px;
@@ -243,4 +247,32 @@ textarea {
   font-size: 13px;
   color: #8A6A50;
   line-height: 1.7;
+}
+
+@media (max-width: 900px) {
+  .contactHero,
+  .contactMain,
+  .faqSection {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+  .contactMain,
+  .faqGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .formRow {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .contactHero h1 {
+    font-size: 34px;
+  }
+
+  .formCol {
+    padding: 24px;
+  }
 }

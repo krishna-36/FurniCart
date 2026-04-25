@@ -1,76 +1,85 @@
-import React, {useState} from 'react';
+import React, { useState } from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
 
 function Signup() {
+  const navigate = useNavigate();
   const [signupData, setSignupData] = useState({
-    name:"",
-    email:"",
-    password:""
-  })
+    name: "",
+    email: "",
+    password: "",
+  });
+  const [status, setStatus] = useState("");
 
   function handleChange(e) {
-    const {name, value} = e.target;
-    setSignupData((prev)=>({
-      ...prev,[name]:value
-    }))
+    const { name, value } = e.target;
+    setSignupData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   }
-  console.log(signupData);
 
-  function handleSignup() {
-    if(signupData?.email || signupData?.password || signupData?.name)
-    {
-      alert("Please fill required details");
+  async function handleSignup(event) {
+    event.preventDefault();
+
+    if (!(signupData.email && signupData.password && signupData.name)) {
+      setStatus("Please fill required details.");
       return;
     }
 
+    try {
+      const response = await axios.post("http://localhost:5000/api/signup", signupData);
+      setStatus(response.data.message);
+      setTimeout(() => navigate("/login"), 700);
+    } catch (error) {
+      setStatus(error.response?.data?.message || "Unable to create account right now.");
+    }
   }
 
   return (
     <div className="signupContainer">
       <div className="signupSection">
-        <div className="signupForm">
+        <form className="signupForm" onSubmit={handleSignup}>
           <h2>Sign Up</h2>
-          <TextField 
+          <TextField
             variant="outlined"
             size="small"
-            id="outlined-textarea"
             label="User Name"
             placeholder="User Name"
             name="name"
+            value={signupData.name}
             onChange={handleChange}
-            sx={{
-            borderRadius: "30px"
-            }}
           />
-          <TextField 
+          <TextField
             variant="outlined"
             size="small"
-            id="outlined-textarea"
             label="Email"
             placeholder="Email"
             name="email"
+            type="email"
+            value={signupData.email}
             onChange={handleChange}
-            sx={{
-            borderRadius: "30px"
-            }}
           />
-          <TextField 
+          <TextField
             variant="outlined"
             size="small"
-            id="outlined-textarea"
             label="Password"
             placeholder="Password"
             name="password"
+            type="password"
+            value={signupData.password}
             onChange={handleChange}
-            sx={{
-            borderRadius: "30px"
-            }}
           />
-          <a href='/login' className="alreadyUser">Already a user?</a>
-          <Button variant="contained" onClick={handleSignup}>Sign Up</Button>          
-        </div>
+          <Link to="/login" className="alreadyUser">
+            Already a user?
+          </Link>
+          {status && <p className="formStatus">{status}</p>}
+          <Button variant="contained" type="submit">
+            Sign Up
+          </Button>
+        </form>
         <div className="signupImg"></div>
       </div>
     </div>

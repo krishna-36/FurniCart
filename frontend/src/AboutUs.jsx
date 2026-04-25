@@ -64,21 +64,21 @@ function AboutUs() {
         </div>
         <div className="storyFeatures">
           <div className="featureItem">
-            <div className="featureIcon">🪑</div>
+            <div className="featureIcon">01</div>
             <div>
               <div className="featureTitle">Handpicked materials</div>
               <div className="featureSub">Only the finest wood and fabrics</div>
             </div>
           </div>
           <div className="featureItem">
-            <div className="featureIcon">🚚</div>
+            <div className="featureIcon">02</div>
             <div>
               <div className="featureTitle">Fast delivery</div>
               <div className="featureSub">Delivered within 7 days</div>
             </div>
           </div>
           <div className="featureItem">
-            <div className="featureIcon">⭐</div>
+            <div className="featureIcon">03</div>
             <div>
               <div className="featureTitle">5-star quality</div>
               <div className="featureSub">Rated 4.9 by our customers</div>
@@ -232,26 +232,30 @@ function AboutUs() {
             {
               initials: "KK",
               name: "Krishna Kumar",
+              role: "Operations Lead",
               bg: "#F5EDE0",
               color: "#C8722A",
             },
             {
               initials: "L",
               name: "Lohith",
+              role: "Product Designer",
               bg: "#E8F5F0",
               color: "#0F6E56",
             },
             {
               initials: "A",
               name: "Abhishekh",
+              role: "Frontend Developer",
               bg: "#EDE8F5",
               color: "#534AB7",
             },
             {
               initials: "A",
               name: "Ashwith",
-              bg: "#60565c",
-              color: "#ea31b9",
+              role: "Backend Developer",
+              bg: "#EEF3F8",
+              color: "#1F5C73",
             }
           ].map((member, i) => (
             <div className="teamCard" key={i}>
